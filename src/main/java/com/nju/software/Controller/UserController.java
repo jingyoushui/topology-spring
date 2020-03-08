@@ -5,15 +5,13 @@ import com.nju.software.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Controller
+@RequestMapping("user")
 public class UserController {
 
     @Autowired
@@ -28,7 +26,7 @@ public class UserController {
     //测试首次前端的profile请求
     @CrossOrigin
     @ResponseBody
-    @RequestMapping(value = "/user/profile")
+    @RequestMapping(value = "/profile")
     public User profile(){
         User user = userService.findUserById("39f8df817cea444ba880cd5fef2ec2f5");//数据库中存在的一条数据
         return user;
@@ -49,5 +47,14 @@ public class UserController {
         return sMap;
     }
 
-
+    @ResponseBody
+    @RequestMapping(value = "/addUser")
+    public Map<String,String > addUser(@RequestBody User user){
+        user.setId(user.getUUID());
+        String id = userService.save(user);
+        System.out.println(user.toString());
+        Map<String,String> sMap = new HashMap<>();
+        sMap.put("id",id);
+        return sMap;
+    }
 }

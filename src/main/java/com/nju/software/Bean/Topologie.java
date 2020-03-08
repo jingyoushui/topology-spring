@@ -28,14 +28,14 @@ public class Topologie {
     private String desc;
     //图形数据
     private Object data;
-    //图形图片
+    //这个是文件生成的图片地址
     private String image;
     //文件拥有者id
-    private Integer userId;
+    private String userId;
     //拥有者姓名
     private String username;
     //编辑者id
-    private Integer editorId;
+    private String editorId;
     //编辑者姓名
     private String editorName;
     //是否共享

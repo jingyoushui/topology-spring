@@ -16,8 +16,8 @@ public class UserService {
         return userDao.findUserById(id);
     }
 
-    public void save(User user){
-        userDao.save(user);
+    public String save(User user){
+       return (userDao.save(user)).getId();
     }
 
     public User findUserByPhone(String phone){
