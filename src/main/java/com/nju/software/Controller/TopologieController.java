@@ -11,9 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @RequestMapping("topology")
@@ -68,8 +66,27 @@ public class TopologieController {
         sMap.put("id",topologie_id);
         return sMap;
 
+    }
+    @CrossOrigin
+    @ResponseBody
+    @PatchMapping(path = "/update")
+    public void updateTopologie(@RequestBody JSONObject jsonParam){
+
+        String id = jsonParam.get("id").toString();
+        boolean shared = (boolean) jsonParam.get("shared");
+        Topologie t = topologieService.findTopologieById(id);
+        t.setShared(shared);
+        topologieService.save(t);
+
+    }
+
+    @CrossOrigin
+    @ResponseBody
+    @RequestMapping(path = "/getShared")
+    public Map<String,Object> getShared(@RequestParam("pageIndex")int pageIndex,@RequestParam("pageCount")int pageCount){
 
 
-
+        Map<String,Object> sMap = topologieService.findTopologiesByShared(true,pageIndex,pageCount);
+        return sMap;
     }
 }

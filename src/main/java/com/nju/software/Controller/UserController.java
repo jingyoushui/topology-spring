@@ -28,7 +28,7 @@ public class UserController {
     @ResponseBody
     @RequestMapping(value = "/profile")
     public User profile(){
-        User user = userService.findUserById("39f8df817cea444ba880cd5fef2ec2f5");//数据库中存在的一条数据
+        User user = userService.findUserById("7f0c299301db4f70a507ff90d6ed81ba");//数据库中存在的一条数据
         return user;
     }
 
