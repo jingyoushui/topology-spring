@@ -73,9 +73,20 @@ public class TopologieController {
     public void updateTopologie(@RequestBody JSONObject jsonParam){
 
         String id = jsonParam.get("id").toString();
-        boolean shared = (boolean) jsonParam.get("shared");
         Topologie t = topologieService.findTopologieById(id);
-        t.setShared(shared);
+        if(jsonParam.containsKey("shared")){
+            boolean shared = (boolean) jsonParam.get("shared");
+            t.setShared(shared);
+        }
+        if(jsonParam.containsKey("name")){
+            String name = (String) jsonParam.get("name");
+            t.setName(name);
+        }
+        if(jsonParam.containsKey("desc")){
+            String desc  = (String) jsonParam.get("desc");
+            t.setDesc(desc);
+        }
+
         topologieService.save(t);
 
     }

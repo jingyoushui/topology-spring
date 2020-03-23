@@ -16,5 +16,5 @@ public interface TopologieDao  extends MongoRepository<Topologie,Integer> {
 
     public Topologie findTopologieById(String  id);
 
-    public Page<Topologie> findTopologiesByShared(boolean shared, Pageable pageable);
+//    public Page<Topologie> findTopologiesByShared(boolean shared, Pageable pageable);
 }
