@@ -13,7 +13,7 @@ import java.util.UUID;
  *
  * @Auther: lixing
  * @Date: 2020/03/09/下午4:37
- * @Description:
+ * @Description: 这是分享时首页展示的图片
  */
 @AllArgsConstructor
 @NoArgsConstructor
@@ -35,9 +35,5 @@ public class Blobimage {
     private byte[] file;
     //是否共享
     private boolean ispublic;
-
-    public String getUUID() {
-        return UUID.randomUUID().toString().replace("-", "").toLowerCase();
-    }
 
 }

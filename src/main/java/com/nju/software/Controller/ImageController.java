@@ -5,6 +5,7 @@ import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.nju.software.Bean.Image;
 import com.nju.software.Token.UserLoginToken;
 import com.nju.software.service.ImageService;
+import com.nju.software.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +31,8 @@ public class ImageController {
 
     @Autowired
     ImageService imageService;
+    @Autowired
+    private UUID uuid;
 
 
     @CrossOrigin
@@ -49,7 +52,7 @@ public class ImageController {
         } catch (JWTDecodeException j) {
             throw new RuntimeException("401");
         }
-        String id = image.getUUID();
+        String id = uuid.getUUID();
         image.setId(id);
         image.setCreatedAt(new Date().getTime());
 

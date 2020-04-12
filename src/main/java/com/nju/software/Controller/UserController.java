@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.nju.software.Bean.User;
 import com.nju.software.service.UserService;
+import com.nju.software.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,6 +20,8 @@ public class UserController {
 
     @Autowired
     UserService userService;
+    @Autowired
+    private UUID uuid;
 
     @ResponseBody
     @RequestMapping("/")
@@ -61,7 +64,7 @@ public class UserController {
     @ResponseBody
     @RequestMapping(value = "/addUser")
     public Map<String,String > addUser(@RequestBody User user){
-        user.setId(user.getUUID());
+        user.setId(uuid.getUUID());
         String id = userService.save(user);
         System.out.println(user.toString());
         Map<String,String> sMap = new HashMap<>();

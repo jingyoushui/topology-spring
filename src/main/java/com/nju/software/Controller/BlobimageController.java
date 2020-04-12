@@ -4,6 +4,7 @@ package com.nju.software.Controller;
 import com.alibaba.fastjson.JSONObject;
 import com.nju.software.Bean.Blobimage;
 import com.nju.software.service.BlobimageService;
+import com.nju.software.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,9 @@ public class BlobimageController {
     @Autowired
      private BlobimageService blobimageService;
 
+    @Autowired
+    private UUID uuid;
+
     @CrossOrigin
     @ResponseBody
     @PostMapping(value = "/upload_t_image")
@@ -33,7 +37,7 @@ public class BlobimageController {
 
 
         Blobimage blobimage = new Blobimage();
-        String name = blobimage.getUUID();
+        String name = uuid.getUUID();
         String url = "thumb_"+name+".png";
         blobimage.setPath(url);
         blobimage.setIspublic(isPublic);
@@ -59,7 +63,13 @@ public class BlobimageController {
     @CrossOrigin
     @GetMapping(path = "/blob/{id}")
     public ResponseEntity<byte[]> getblob(@PathVariable("id")String path){
-        byte[] image = blobimageService.findBlob(path).getFile();
+        byte[] image = null;
+        try {
+             image= blobimageService.findBlob(path).getFile();
+        }catch (NullPointerException e){
+            System.out.println(e);
+        }
+
 
         final HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.IMAGE_PNG);

@@ -38,8 +38,4 @@ public class Image {
     private long createdAt;
     private long deletedAt;
 
-    public String getUUID() {
-        return UUID.randomUUID().toString().replace("-", "").toLowerCase();
-    }
-
 }

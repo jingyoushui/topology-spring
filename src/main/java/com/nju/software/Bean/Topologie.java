@@ -49,8 +49,4 @@ public class Topologie {
     private Long updatedAt;
     private Long deletedAt;
 
-    public String getUUID() {
-        return UUID.randomUUID().toString().replace("-", "").toLowerCase();
-    }
-
 }

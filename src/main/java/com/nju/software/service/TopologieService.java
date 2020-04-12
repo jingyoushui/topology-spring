@@ -67,4 +67,39 @@ public class TopologieService {
         return smap;
 
     }
+    public Map<String,Object> findTopologiesByUserId(String userId, Integer pageIndex,Integer pageCount){
+        SpringbootPageable pageable = new SpringbootPageable();
+        PageModel pm=new PageModel();
+        Query query = new Query();
+        List<Sort.Order> orders = new ArrayList<Sort.Order>();  //排序
+        orders.add(new Sort.Order(Sort.Direction.DESC, "createdAt"));
+        Sort sort = Sort.by(orders);
+        Criteria criteria = new Criteria();
+        //sid查询
+        criteria.and("userId").is(userId);
+        query.addCriteria(criteria);
+        // 开始页
+        pm.setPagenumber(pageIndex);
+        // 每页条数
+        pm.setPagesize(pageCount);
+        // 排序
+        pm.setSort(sort);
+        pageable.setPage(pm);
+        // 查询出一共的条数
+        Long count = mongoTemplate.count(query, Topologie.class);
+
+        // 查询
+        List<Topologie> list = mongoTemplate.find(query.with(pageable), Topologie.class);
+        // 将集合与分页结果封装
+        Map<String,Object> smap = new HashMap<>();
+        smap.put("list",list);
+        smap.put("count",count);
+//        Page<Topologie> pagelist = new PageImpl<Topologie>(list, pageable, count);
+        return smap;
+
+    }
+
+    public int deleteTopologieByIdAndUserId(String id,String userId){
+        return topologieDao.deleteTopologieByIdAndUserId(id,userId);
+    }
 }

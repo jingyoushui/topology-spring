@@ -6,6 +6,7 @@ import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.nju.software.Bean.Topologie;
 import com.nju.software.Token.UserLoginToken;
 import com.nju.software.service.TopologieService;
+import com.nju.software.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +20,9 @@ public class TopologieController {
 
     @Autowired
     public TopologieService topologieService;
+
+    @Autowired
+    private UUID uuid;
 
     @CrossOrigin
     @ResponseBody
@@ -53,15 +57,14 @@ public class TopologieController {
         String topologie_id = topologie.getId();
 
         if(topologie_id==""){
-            topologie_id = topologie.getUUID();
+            topologie_id = uuid.getUUID();
             topologie.setId(topologie_id);
+            topologie.setCreatedAt(new Date().getTime());
+        }else {
+            topologie.setUpdatedAt(new Date().getTime());
         }
-        topologie.setCreatedAt(new Date().getTime());
         System.out.println(topologie.toString());
         topologieService.save(topologie);
-
-        System.out.println(topologie.toString());
-
         Map<String,Object> sMap = new HashMap<>();
         sMap.put("id",topologie_id);
         return sMap;
@@ -99,5 +102,39 @@ public class TopologieController {
 
         Map<String,Object> sMap = topologieService.findTopologiesByShared(true,pageIndex,pageCount);
         return sMap;
+    }
+
+    @CrossOrigin
+    @ResponseBody
+    @RequestMapping(path = "/getByUserId")
+    public Map<String,Object> getTopologyByUserId(HttpServletRequest httpServletRequest, @RequestParam("pageIndex")int pageIndex,@RequestParam("pageCount")int pageCount){
+
+        String userId = "";
+        String token = httpServletRequest.getHeader("Authorization");// 从 http 请求头中取出 token
+        // 获取 token 中的 user id
+        try {
+            userId = JWT.decode(token).getAudience().get(0);
+        } catch (JWTDecodeException j) {
+            throw new RuntimeException("401");
+        }
+        Map<String,Object> sMap = topologieService.findTopologiesByUserId(userId,pageIndex,pageCount);
+        return sMap;
+    }
+
+    @CrossOrigin
+    @ResponseBody
+    @DeleteMapping(path = "/deleteTopology/{id}")
+    public int deleteTopologyByIdAndUserId(HttpServletRequest httpServletRequest,@PathVariable(name = "id") String id){
+
+        String userId = "";
+        String token = httpServletRequest.getHeader("Authorization");// 从 http 请求头中取出 token
+        // 获取 token 中的 user id
+        try {
+            userId = JWT.decode(token).getAudience().get(0);
+        } catch (JWTDecodeException j) {
+            throw new RuntimeException("401");
+        }
+        int ret = topologieService.deleteTopologieByIdAndUserId(id,userId);
+        return ret;
     }
 }
