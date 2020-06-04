@@ -8,6 +8,7 @@ import lombok.experimental.Accessors;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.Id;
+import java.io.Serializable;
 import java.sql.Date;
 import java.util.List;
 import java.util.UUID;
@@ -17,7 +18,7 @@ import java.util.UUID;
 @Data
 @Accessors(chain = true)
 @Document
-public class Topologie {
+public class Topologie implements Serializable {
 
     //图形文件id
     @Id

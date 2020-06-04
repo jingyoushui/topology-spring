@@ -3,6 +3,7 @@ package com.nju.software.service;
 import com.nju.software.Bean.User;
 import com.nju.software.Dao.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -11,7 +12,7 @@ import java.util.UUID;
 public class UserService {
     @Autowired
     UserDao userDao;
-
+    @Cacheable(value = "user",key = "\"user_\" + #id")
     public User findUserById(String id){
         return userDao.findUserById(id);
     }

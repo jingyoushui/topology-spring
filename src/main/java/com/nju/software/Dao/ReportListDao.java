@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ReportListDao extends MongoRepository<ReportList,String> {
 
-    public ReportList findReportListByTopologyId(String  id);
+    public ReportList findReportListById(String  id);
 
 }

@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.UUID;
 
 /**
@@ -21,7 +22,7 @@ import java.util.UUID;
 @Accessors(chain = true)
 @Entity
 @Table(name = "blobimage")
-public class Blobimage {
+public class Blobimage implements Serializable {
 
     @Id
     private String path;

@@ -23,13 +23,7 @@ public class UserController {
     @Autowired
     private UUID uuid;
 
-    @ResponseBody
-    @RequestMapping("/")
-    public String  index(Model model){
-        return "index";
-    }
-
-    //测试首次前端的profile请求
+    //测试首次前端的profile请求,这是当浏览器保存的token,自动登录
     @CrossOrigin
     @ResponseBody
     @RequestMapping(value = "/profile")
@@ -66,7 +60,6 @@ public class UserController {
     public Map<String,String > addUser(@RequestBody User user){
         user.setId(uuid.getUUID());
         String id = userService.save(user);
-        System.out.println(user.toString());
         Map<String,String> sMap = new HashMap<>();
         sMap.put("id",id);
         return sMap;

@@ -4,7 +4,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.nju.software.Bean.Topologie;
+import com.nju.software.Bean.TopologieData;
+import com.nju.software.Model.Config;
 import com.nju.software.Token.UserLoginToken;
+import com.nju.software.service.TopologieDataService;
 import com.nju.software.service.TopologieService;
 import com.nju.software.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +15,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.util.*;
+import java.util.concurrent.CountDownLatch;
 
 @Controller
 @RequestMapping("topology")
@@ -22,14 +27,28 @@ public class TopologieController {
     public TopologieService topologieService;
 
     @Autowired
+    public TopologieDataService topologieDataService;
+
+    @Autowired
     private UUID uuid;
+
+    private String fileurl = Config.devfile;
 
     @CrossOrigin
     @ResponseBody
     @RequestMapping(value = "/get/{id}")
-    public Topologie findTopologieById(@PathVariable(name = "id") String id){
-        System.out.println("id:"+id);
-        return topologieService.findTopologieById(id);
+    public Topologie findTopologieById(@PathVariable(name = "id") String id) throws InterruptedException {
+        Topologie topologie = topologieService.findTopologieById(id);
+        TopologieData topologieData = topologieDataService.findTopologieById(id);
+        //这里要等getData之后再赋值
+        CountDownLatch countDownLatch=new CountDownLatch(1);
+        Object data = topologieData.getData();
+        if(data!=null){
+            countDownLatch.countDown();
+            topologie.setData(data);
+        }
+        countDownLatch.await();
+        return topologie;
     }
 
 
@@ -63,7 +82,14 @@ public class TopologieController {
         }else {
             topologie.setUpdatedAt(new Date().getTime());
         }
-        System.out.println(topologie.toString());
+        TopologieData topologieData = new TopologieData();
+        Object data = topologie.getData();
+        topologieData.setData(data);
+        topologieData.setId(topologie_id);
+        topologieDataService.save(topologieData);
+
+
+        topologie.setData(null);
         topologieService.save(topologie);
         Map<String,Object> sMap = new HashMap<>();
         sMap.put("id",topologie_id);
@@ -134,7 +160,22 @@ public class TopologieController {
         } catch (JWTDecodeException j) {
             throw new RuntimeException("401");
         }
+        //删除对应的图片
+        Topologie t = topologieService.findTopologieById(id);
+        String imageName = t.getImage();
+        System.out.println(imageName);
+        File file = new File(fileurl+imageName);
+        if (file.exists() && file.isFile()) {
+            if (file.delete()) {
+                System.out.println("删除单个文件" + fileurl+imageName + "成功！");
+
+            } else {
+                System.out.println("删除单个文件" + fileurl+imageName + "失败！");
+            }
+        }
         int ret = topologieService.deleteTopologieByIdAndUserId(id,userId);
+        topologieDataService.deleteTopologieDataById(id);
+
         return ret;
     }
 }

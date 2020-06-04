@@ -6,6 +6,9 @@ import com.nju.software.Dao.TopologieDao;
 import com.nju.software.util.PageModel;
 import com.nju.software.util.SpringbootPageable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -28,25 +31,28 @@ public class TopologieService {
     @Autowired
     TopologieDao topologieDao;
 
+    @Cacheable(value = "topology",key = "\"topology_\" + #id")
     public Topologie findTopologieById(String id){
         return topologieDao.findTopologieById(id);
     }
 
-    public void save(Topologie topologie){
-        topologieDao.save(topologie);
+    @CachePut(value = "topology",key = "\"topology_\" + #result.id")
+    public Topologie save(Topologie topologie){
+         return topologieDao.save(topologie);
     }
-
+//    @Cacheable(value = "topology")
     public Map<String,Object> findTopologiesByShared(boolean shared, Integer pageIndex,Integer pageCount){
         SpringbootPageable pageable = new SpringbootPageable();
         PageModel pm=new PageModel();
-        Query query = new Query();
+
         List<Sort.Order> orders = new ArrayList<Sort.Order>();  //排序
         orders.add(new Sort.Order(Sort.Direction.DESC, "createdAt"));
         Sort sort = Sort.by(orders);
         Criteria criteria = new Criteria();
         //sid查询
         criteria.and("shared").is(shared);
-        query.addCriteria(criteria);
+        Query query = new Query(criteria);
+//        query.addCriteria(criteria);
         // 开始页
         pm.setPagenumber(pageIndex);
         // 每页条数
@@ -70,14 +76,15 @@ public class TopologieService {
     public Map<String,Object> findTopologiesByUserId(String userId, Integer pageIndex,Integer pageCount){
         SpringbootPageable pageable = new SpringbootPageable();
         PageModel pm=new PageModel();
-        Query query = new Query();
+
         List<Sort.Order> orders = new ArrayList<Sort.Order>();  //排序
         orders.add(new Sort.Order(Sort.Direction.DESC, "createdAt"));
         Sort sort = Sort.by(orders);
         Criteria criteria = new Criteria();
         //sid查询
         criteria.and("userId").is(userId);
-        query.addCriteria(criteria);
+
+        Query query = new Query(criteria);
         // 开始页
         pm.setPagenumber(pageIndex);
         // 每页条数
@@ -99,6 +106,7 @@ public class TopologieService {
 
     }
 
+    @CacheEvict(value = "topology",key = "\"topology_\" + #id")
     public int deleteTopologieByIdAndUserId(String id,String userId){
         return topologieDao.deleteTopologieByIdAndUserId(id,userId);
     }

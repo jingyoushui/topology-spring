@@ -7,6 +7,7 @@ import com.nju.software.Token.TokenService;
 import com.nju.software.Token.UserLoginToken;
 import com.nju.software.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -24,6 +25,10 @@ public class LoginController {
     @Autowired
     TokenService tokenService;
 
+    @RequestMapping("/")
+    public String  index(Model model){
+        return "index";
+    }
     //登录
 
     @CrossOrigin

@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Arrays;
 import java.util.Date;
 
 @SpringBootTest
@@ -28,6 +29,11 @@ class TopologySpringApplicationTests {
         u.setUsername("哈哈");
         u.setCreatedAt(new Date().getTime());
         userDao.save(u);
+
+    }
+
+    @Test
+    public void a(){
 
     }
 

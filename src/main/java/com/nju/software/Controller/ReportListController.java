@@ -25,8 +25,7 @@ public class ReportListController {
     @ResponseBody
     @RequestMapping(value = "/get/{id}")
     public ReportList findReportListByTopologyId(@PathVariable(name = "id") String id){
-        System.out.println("id:"+id);
-        return reportListService.findReportListByTopologyId(id);
+        return reportListService.findReportListById(id);
     }
 
     @CrossOrigin
@@ -46,11 +45,10 @@ public class ReportListController {
                 throw new RuntimeException("401");
             }
         }
-        System.out.println(reportList.toString());
         reportListService.save(reportList);
 
         Map<String,Object> sMap = new HashMap<>();
-        sMap.put("id",reportList.getTopologyId());
+        sMap.put("id",reportList.getId());
         return sMap;
 
     }
