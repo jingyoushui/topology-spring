@@ -28,7 +28,6 @@ public class BlobimageController {
     @Autowired
     private UUID uuid;
     private String fileurl = Config.devfile;
-//    private String fileurl = "/home/ubuntu/topology-ts/UserImage/";
 
 //    @CrossOrigin
 //    @ResponseBody
